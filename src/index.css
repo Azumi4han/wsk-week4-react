@@ -143,3 +143,12 @@ button.back {
 button.back:hover {
   background-color: #8d2c38;
 }
+
+/* error message */
+.error {
+  padding: 1rem;
+  border: 1px solid #b23a48;
+  border-radius: 6px;
+  background-color: #fbeaec;
+  color: #8d2c38;
+}

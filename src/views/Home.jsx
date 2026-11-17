@@ -1,45 +1,61 @@
+import {useEffect, useState} from 'react';
 import MediaRow from '../components/MediaRow';
+import {fetchData} from '../utils/fetchData';
 
-const mediaArray = [
-  {
-    media_id: 8,
-    user_id: 5,
-    filename: 'https://placehold.co/800?text=Pic1&font=roboto.jpg',
-    thumbnail: 'https://placehold.co/200?text=Thumb1&font=roboto.jpg',
-    filesize: 170469,
-    media_type: 'image/jpeg',
-    title: 'Picture 1',
-    description: 'This is a placeholder picture.',
-    created_at: '2024-01-07T20:49:34.000Z',
-  },
-  {
-    media_id: 9,
-    user_id: 7,
-    filename: 'https://placehold.co/800?text=Pic2&font=oswald.png',
-    thumbnail: 'https://placehold.co/200?text=Thumb2&font=oswald.png',
-    filesize: 1002912,
-    media_type: 'image/png',
-    title: 'Pic 2',
-    description: '',
-    created_at: '2024-01-07T21:32:27.000Z',
-  },
-  {
-    media_id: 17,
-    user_id: 2,
-    filename: 'https://placeholdervideo.dev/1920x1080',
-    thumbnail: 'https://placehold.co/200?text=Video&font=oswald.png',
-    filesize: 1236616,
-    media_type: 'video/mp4',
-    title: 'Video 1',
-    description: 'Placeholder video.',
-    created_at: '2024-01-07T20:48:13.000Z',
-  },
-];
+const mediaApi = import.meta.env.VITE_MEDIA_API;
+const authApi = import.meta.env.VITE_AUTH_API;
 
 const Home = () => {
+  const [mediaArray, setMediaArray] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const getMedia = async () => {
+      try {
+        const media = await fetchData(`${mediaApi}/media`);
+
+        // Cache user requests so that each user is fetched only once
+        const users = new Map();
+
+        const mediaWithUsers = await Promise.all(
+          media.map(async (item) => {
+            if (!users.has(item.user_id)) {
+              users.set(
+                item.user_id,
+                fetchData(`${authApi}/users/${item.user_id}`),
+              );
+            }
+
+            try {
+              const user = await users.get(item.user_id);
+              return {...item, username: user.username};
+            } catch {
+              return {...item, username: 'Unknown'};
+            }
+          }),
+        );
+
+        setMediaArray(mediaWithUsers);
+      } catch (err) {
+        console.error(err);
+        setError(err.message);
+      }
+    };
+
+    getMedia();
+  }, []);
+
   return (
     <>
       <h2>My Media</h2>
+
+      {error && (
+        <p className="error">
+          Failed to load media: {error}. Connect to the Metropolia network or
+          VPN and try again.
+        </p>
+      )}
+
       <table>
         <thead>
           <tr>
@@ -49,6 +65,7 @@ const Home = () => {
             <th>Created</th>
             <th>Size</th>
             <th>Type</th>
+            <th>Owner</th>
             <th>Action</th>
           </tr>
         </thead>
