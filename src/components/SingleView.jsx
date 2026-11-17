@@ -23,7 +23,7 @@ const SingleView = (props) => {
           <video src={item.filename} controls></video>
         )}
 
-        <p>{item.description || 'No description.'}</p>
+        <p>{item.description || 'No description'}</p>
 
         <dl>
           <dt>Owner</dt>
