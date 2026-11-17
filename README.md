@@ -2,6 +2,8 @@
 
 React exercises for the Web Applications course.
 
+Open [this app](https://users.metropolia.fi/~igorkarp/wsk-routing/) to view it in the browser.
+
 ## Branches
 
 - `main` - Vite + React starting point
