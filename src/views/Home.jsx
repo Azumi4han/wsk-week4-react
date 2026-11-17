@@ -52,7 +52,7 @@ const Home = () => {
       {error && (
         <p className="error">
           Failed to load media: {error}. Connect to the Metropolia network or
-          VPN and try again.
+          VPN and try again
         </p>
       )}
 
