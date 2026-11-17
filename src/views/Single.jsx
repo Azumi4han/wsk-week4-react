@@ -8,7 +8,7 @@ const Single = () => {
     return (
       <>
         <h2>No media selected</h2>
-        <p>Choose a media item on the home page.</p>
+        <p>Choose a media item on the home page</p>
         <button type="button" className="back" onClick={() => navigate('/')}>
           Go home
         </button>
@@ -31,7 +31,7 @@ const Single = () => {
         <video src={item.filename} controls></video>
       )}
 
-      <p>{item.description || 'No description.'}</p>
+      <p>{item.description || 'No description'}</p>
 
       <dl>
         <dt>Owner</dt>
